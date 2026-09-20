@@ -71,11 +71,12 @@ import com.abk.kernel.data.model.AbkRuntimeBuildInfo
 import com.abk.kernel.data.model.AbkRuntimeModule
 import com.abk.kernel.data.model.AbkRuntimeStatus
 import com.abk.kernel.data.model.downloadFileName
-import com.abk.kernel.ui.blur.BlurScreenScaffold
 import com.abk.kernel.ui.blur.blurredCardBackground
 import com.abk.kernel.ui.blur.blurredCardSurfaceColor
+import com.abk.kernel.ui.components.AbkPageScaffold
 import com.abk.kernel.ui.components.AbkScreenHorizontalPadding
 import com.abk.kernel.ui.components.AbkInlineLoadingPill
+import com.abk.kernel.ui.components.abkPageEnter
 import com.abk.kernel.ui.components.ObserveChildPageVisibility
 import com.abk.kernel.ui.components.childPageOverlayEnterTransition
 import com.abk.kernel.ui.components.childPageOverlayExitTransition
@@ -86,13 +87,11 @@ import com.abk.kernel.ui.components.ExpressiveSwitch
 import com.abk.kernel.ui.components.ExpressiveHeroCard
 import com.abk.kernel.ui.components.ExpressiveSectionCard
 import com.abk.kernel.ui.components.ExpressiveStatusChip
-import com.abk.kernel.ui.components.ExpressiveTopBar
 import com.abk.kernel.ui.components.ShimmerLinearProgress
 import com.abk.kernel.ui.components.rememberAbkInteractiveRefreshPresentation
 import com.abk.kernel.ui.theme.AbkInsets
 import com.abk.kernel.ui.theme.AbkRadius
 import com.abk.kernel.ui.theme.AbkSpacing
-import com.abk.kernel.ui.theme.appPageBackgroundColor
 import com.abk.kernel.ui.theme.uiSurfaceColor
 import com.abk.kernel.ui.webui.ModuleWebUiActivity
 import com.abk.kernel.utils.DownloadUtils
@@ -168,32 +167,28 @@ fun RuntimeHomeScreen(
             .fillMaxWidth()
             .height(maxHeight + childPageBottomInset)
 
-        BlurScreenScaffold(
+        AbkPageScaffold(
+            title = "AnyBase Kernel",
             blurConfig = state.blurConfig,
-            containerColor = appPageBackgroundColor(uiSurfaceColor(MaterialTheme.colorScheme.surface)),
-            topBar = {
-                ExpressiveTopBar(
-                    title = "AnyBase Kernel",
-                    compactTitle = true,
-                    scrollBehavior = scrollBehavior,
-                    enableBlur = state.blurEnabled,
-                    actions = {
-                        IconButton(onClick = {
-                            refreshPresentation.beginRefresh()
-                            vm.refreshAbkRuntimeStatus()
-                        }) {
-                            Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.runtime_refresh))
-                        }
-                        IconButton(onClick = onSwitchToClassic) {
-                            Icon(Icons.Default.SwapHoriz, contentDescription = stringResource(R.string.nav_status))
-                        }
-                    }
-                )
+            blurEnabled = state.blurEnabled,
+            compactTitle = true,
+            scrollBehavior = scrollBehavior,
+            actions = {
+                IconButton(onClick = {
+                    refreshPresentation.beginRefresh()
+                    vm.refreshAbkRuntimeStatus()
+                }) {
+                    Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.runtime_refresh))
+                }
+                IconButton(onClick = onSwitchToClassic) {
+                    Icon(Icons.Default.SwapHoriz, contentDescription = stringResource(R.string.nav_status))
+                }
             }
         ) { topBarHeight ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .abkPageEnter()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = AbkScreenHorizontalPadding),
@@ -519,28 +514,24 @@ fun InstalledModulesScreen(
     }
 
     Box(Modifier.fillMaxSize()) {
-        BlurScreenScaffold(
+        AbkPageScaffold(
+            title = stringResource(R.string.runtime_installed_modules_title),
             blurConfig = state.blurConfig,
-            containerColor = appPageBackgroundColor(uiSurfaceColor(MaterialTheme.colorScheme.surface)),
-            topBar = {
-                ExpressiveTopBar(
-                    title = stringResource(R.string.runtime_installed_modules_title),
-                    scrollBehavior = scrollBehavior,
-                    enableBlur = state.blurEnabled,
-                    actions = {
-                        IconButton(onClick = {
-                            refreshPresentation.beginRefresh()
-                            vm.refreshAbkRuntimeStatus()
-                        }) {
-                            Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.runtime_refresh_installed_modules))
-                        }
-                    }
-                )
+            blurEnabled = state.blurEnabled,
+            scrollBehavior = scrollBehavior,
+            actions = {
+                IconButton(onClick = {
+                    refreshPresentation.beginRefresh()
+                    vm.refreshAbkRuntimeStatus()
+                }) {
+                    Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.runtime_refresh_installed_modules))
+                }
             }
         ) { topBarHeight ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .abkPageEnter()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = AbkScreenHorizontalPadding),
