@@ -75,6 +75,7 @@ import com.abk.kernel.ui.components.childPageOverlayExitTransition
 import com.abk.kernel.ui.components.childPageScrimExitTransition
 import com.abk.kernel.ui.components.rememberChildPageBackController
 import com.abk.kernel.ui.components.rememberChildPageOverlayTransition
+import com.abk.kernel.ui.components.ExpressiveCollapsibleSectionCard
 import com.abk.kernel.ui.components.ExpressiveHeroCard
 import com.abk.kernel.ui.components.ExpressiveListItem
 import com.abk.kernel.ui.components.ExpressiveSectionCard
@@ -2988,8 +2989,9 @@ private fun SettingsHero(
 
 @Composable
 private fun SettingsGroup(title: String, content: @Composable ColumnScope.() -> Unit) {
-    ExpressiveSectionCard(
+    ExpressiveCollapsibleSectionCard(
         title = title,
+        stateKey = "settings-group:$title",
         subtitle = when (title) {
             stringResource(R.string.settings_account) -> stringResource(R.string.settings_group_account_desc)
             stringResource(R.string.settings_build) -> stringResource(R.string.settings_group_build_desc)
