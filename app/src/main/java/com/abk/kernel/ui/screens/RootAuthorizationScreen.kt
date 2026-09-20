@@ -106,6 +106,9 @@ import com.abk.kernel.ui.components.ExpressiveSectionCard
 import com.abk.kernel.ui.components.ExpressiveStatusChip
 import com.abk.kernel.ui.components.ExpressiveSwitch
 import com.abk.kernel.ui.components.ExpressiveTopBar
+import com.abk.kernel.ui.theme.AbkInsets
+import com.abk.kernel.ui.theme.AbkRadius
+import com.abk.kernel.ui.theme.AbkSpacing
 import com.abk.kernel.ui.theme.appPageBackgroundColor
 import com.abk.kernel.ui.theme.uiSurfaceColor
 import com.abk.kernel.viewmodel.MainViewModel
@@ -232,9 +235,9 @@ fun RootAuthorizationScreen(
                     .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .padding(horizontal = AbkScreenHorizontalPadding),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(AbkSpacing.md)
             ) {
-                Spacer(Modifier.height(topBarHeight + 16.dp))
+                Spacer(Modifier.height(topBarHeight + AbkInsets.contentTopGap))
                 RootGrantSearchField(
                     query = query,
                     onQueryChange = { query = it }
@@ -404,11 +407,11 @@ private fun RootGrantInitialLoadingScreen(
             .fillMaxSize()
             .padding(
                 start = AbkScreenHorizontalPadding,
-                top = topBarHeight + 16.dp,
+                top = topBarHeight + AbkInsets.contentTopGap,
                 end = AbkScreenHorizontalPadding,
-                bottom = 80.dp + outerPadding.calculateBottomPadding()
+                bottom = AbkInsets.contentBottomGap + outerPadding.calculateBottomPadding()
             ),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(AbkSpacing.md)
     ) {
         RootGrantSearchField(
             query = query,
@@ -441,7 +444,7 @@ private fun RootGrantSearchField(
         leadingIcon = { Icon(Icons.Default.Search, null) },
         placeholder = { Text(stringResource(R.string.root_auth_search_apps)) },
         singleLine = true,
-        shape = RoundedCornerShape(14.dp)
+        shape = AbkRadius.small
     )
 }
 
@@ -496,7 +499,7 @@ private fun RootGrantDetailLoadingPage(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = AbkScreenHorizontalPadding)
-            .padding(top = topBarHeight + 16.dp)
+            .padding(top = topBarHeight + AbkInsets.contentTopGap)
     )
 }
 
@@ -509,7 +512,7 @@ private fun RootGrantDetailMessagePage(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = AbkScreenHorizontalPadding)
-            .padding(top = topBarHeight + 16.dp),
+            .padding(top = topBarHeight + AbkInsets.contentTopGap),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -539,7 +542,7 @@ private fun RootGrantAppCard(
     onToggle: (Boolean) -> Unit,
     onOpen: () -> Unit
 ) {
-    val shape = RoundedCornerShape(8.dp)
+    val shape = AbkRadius.medium
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -552,8 +555,8 @@ private fun RootGrantAppCard(
         onClick = onOpen
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(AbkSpacing.lg),
+            verticalArrangement = Arrangement.spacedBy(AbkSpacing.sm)
         ) {
             Row(verticalAlignment = Alignment.Top) {
                 AppIcon(
@@ -712,9 +715,9 @@ private fun RootGrantProfilePage(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = AbkScreenHorizontalPadding),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(AbkSpacing.lg)
     ) {
-        Spacer(Modifier.height(topBarHeight + 16.dp))
+        Spacer(Modifier.height(topBarHeight + AbkInsets.contentTopGap))
         if (!warning.isNullOrBlank()) {
             ExpressiveSectionCard(
                 title = stringResource(R.string.root_auth_profile_read_disabled_title),
@@ -855,7 +858,7 @@ private fun RootGrantProfilePage(
             }
         }
 
-        Spacer(Modifier.height(80.dp))
+        Spacer(Modifier.height(AbkInsets.contentBottomGap))
     }
 }
 
@@ -905,7 +908,7 @@ private fun RootGrantChip(label: String) {
 
 @Composable
 private fun RootGrantMessageCard(message: String, onRefresh: () -> Unit) {
-    val shape = RoundedCornerShape(8.dp)
+    val shape = AbkRadius.medium
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -916,8 +919,8 @@ private fun RootGrantMessageCard(message: String, onRefresh: () -> Unit) {
         )
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(AbkSpacing.lg),
+            verticalArrangement = Arrangement.spacedBy(AbkSpacing.sm)
         ) {
             Text(
                 text = message,
