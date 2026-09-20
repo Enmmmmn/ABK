@@ -57,7 +57,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import com.abk.kernel.ui.blur.BlurScreenScaffold
 import com.abk.kernel.ui.blur.blurredCardBackground
 import com.abk.kernel.ui.blur.blurredCardSurfaceColor
 import com.abk.kernel.ui.components.AbkInlineLoadingPill
@@ -116,12 +115,10 @@ import com.abk.kernel.ui.components.rememberChildPageBackController
 import com.abk.kernel.ui.components.rememberChildPageOverlayTransition
 import com.abk.kernel.ui.components.ExpressiveSectionCard
 import com.abk.kernel.ui.components.ExpressiveStatusChip
-import com.abk.kernel.ui.components.ExpressiveTopBar
+import com.abk.kernel.ui.components.AbkPageScaffold
 import com.abk.kernel.ui.theme.AbkInsets
 import com.abk.kernel.ui.theme.AbkRadius
 import com.abk.kernel.ui.theme.AbkSpacing
-import com.abk.kernel.ui.theme.appPageBackgroundColor
-import com.abk.kernel.ui.theme.uiSurfaceColor
 import com.abk.kernel.utils.LocaleHelper
 import com.abk.kernel.utils.DownloadUtils
 import com.abk.kernel.utils.RootUtils
@@ -350,23 +347,18 @@ fun ModuleRepositoryScreen(
             .height(maxHeight + childPageTopInset + childPageBottomInset)
             .offset(y = -childPageTopInset)
 
-        BlurScreenScaffold(
+        AbkPageScaffold(
+            title = runtimeRepoTitleLabel(context),
             blurConfig = state.blurConfig,
-            containerColor = appPageBackgroundColor(uiSurfaceColor(MaterialTheme.colorScheme.surface)),
-            topBar = {
-                ExpressiveTopBar(
-                    title = runtimeRepoTitleLabel(context),
-                    scrollBehavior = scrollBehavior,
-                    enableBlur = state.blurEnabled,
-                    actions = {
-                        IconButton(onClick = ::openRepositorySettings) {
-                            Icon(
-                                Icons.Default.Dns,
-                                contentDescription = runtimeRepoConfigureLabel(context)
-                            )
-                        }
-                    }
-                )
+            blurEnabled = state.blurEnabled,
+            scrollBehavior = scrollBehavior,
+            actions = {
+                IconButton(onClick = ::openRepositorySettings) {
+                    Icon(
+                        Icons.Default.Dns,
+                        contentDescription = runtimeRepoConfigureLabel(context)
+                    )
+                }
             }
         ) { topBarHeight ->
             RuntimeModuleRepositoryListContent(
@@ -430,19 +422,15 @@ fun ModuleRepositoryScreen(
                     backgroundUri = state.customBackgroundUri,
                     backgroundImageEnabled = state.backgroundImageEnabled
                 )
-                BlurScreenScaffold(
+                AbkPageScaffold(
+                    title = runtimeRepoCentralLabel(context),
                     blurConfig = state.blurConfig,
+                    blurEnabled = state.blurEnabled,
                     containerColor = Color.Transparent,
-                    topBar = {
-                        ExpressiveTopBar(
-                            title = runtimeRepoCentralLabel(context),
-                            navigationIcon = {
-                                IconButton(onClick = childPageBack::requestDismiss) {
-                                    Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.module_repo_back))
-                                }
-                            },
-                            enableBlur = state.blurEnabled
-                        )
+                    navigationIcon = {
+                        IconButton(onClick = childPageBack::requestDismiss) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.module_repo_back))
+                        }
                     }
                 ) { topBarHeight ->
                     RuntimeModuleRepositorySettingsPage(
@@ -818,20 +806,15 @@ private fun BuildModuleRepositoryScreenContent(
             .height(maxHeight + childPageTopInset + childPageBottomInset)
             .offset(y = -childPageTopInset)
 
-        BlurScreenScaffold(
+        AbkPageScaffold(
+            title = buildRepoTitleLabel(context),
             blurConfig = state.blurConfig,
-            containerColor = appPageBackgroundColor(uiSurfaceColor(MaterialTheme.colorScheme.surface)),
-            topBar = {
-                ExpressiveTopBar(
-                    title = buildRepoTitleLabel(context),
-                    scrollBehavior = scrollBehavior,
-                    enableBlur = state.blurEnabled,
-                    actions = {
-                        IconButton(onClick = ::openRepositorySettings) {
-                            Icon(Icons.Default.Dns, contentDescription = buildRepoManageLabel(context))
-                        }
-                    }
-                )
+            blurEnabled = state.blurEnabled,
+            scrollBehavior = scrollBehavior,
+            actions = {
+                IconButton(onClick = ::openRepositorySettings) {
+                    Icon(Icons.Default.Dns, contentDescription = buildRepoManageLabel(context))
+                }
             }
         ) { topBarHeight ->
             BuildModuleRepositoryListContent(
@@ -903,19 +886,15 @@ private fun BuildModuleRepositoryScreenContent(
                     backgroundUri = state.customBackgroundUri,
                     backgroundImageEnabled = state.backgroundImageEnabled
                 )
-                BlurScreenScaffold(
+                AbkPageScaffold(
+                    title = buildRepoCentralLabel(context),
                     blurConfig = state.blurConfig,
+                    blurEnabled = state.blurEnabled,
                     containerColor = Color.Transparent,
-                    topBar = {
-                        ExpressiveTopBar(
-                            title = buildRepoCentralLabel(context),
-                            navigationIcon = {
-                                IconButton(onClick = childPageBack::requestDismiss) {
-                                    Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.module_repo_back))
-                                }
-                            },
-                            enableBlur = state.blurEnabled
-                        )
+                    navigationIcon = {
+                        IconButton(onClick = childPageBack::requestDismiss) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.module_repo_back))
+                        }
                     }
                 ) { topBarHeight ->
                     BuildModuleRepositorySettingsPage(
