@@ -86,7 +86,6 @@ import coil.compose.AsyncImage
 import com.abk.kernel.R
 import com.abk.kernel.data.model.RootGrantApp
 import com.abk.kernel.data.model.RootGrantProfile
-import com.abk.kernel.ui.blur.BlurScreenScaffold
 import com.abk.kernel.ui.blur.blurredCardBackground
 import com.abk.kernel.ui.blur.blurredCardSurfaceColor
 import com.abk.kernel.ui.components.AbkCenteredLoadingTransition
@@ -105,12 +104,11 @@ import com.abk.kernel.ui.components.rememberChildPageOverlayTransition
 import com.abk.kernel.ui.components.ExpressiveSectionCard
 import com.abk.kernel.ui.components.ExpressiveStatusChip
 import com.abk.kernel.ui.components.ExpressiveSwitch
-import com.abk.kernel.ui.components.ExpressiveTopBar
+import com.abk.kernel.ui.components.AbkPageScaffold
+import com.abk.kernel.ui.components.abkPageEnter
 import com.abk.kernel.ui.theme.AbkInsets
 import com.abk.kernel.ui.theme.AbkRadius
 import com.abk.kernel.ui.theme.AbkSpacing
-import com.abk.kernel.ui.theme.appPageBackgroundColor
-import com.abk.kernel.ui.theme.uiSurfaceColor
 import com.abk.kernel.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -191,30 +189,25 @@ fun RootAuthorizationScreen(
             .height(maxHeight + childPageTopInset + childPageBottomInset)
             .offset(y = -childPageTopInset)
 
-        BlurScreenScaffold(
+        AbkPageScaffold(
+            title = stringResource(R.string.root_auth_title),
             blurConfig = state.blurConfig,
-            containerColor = appPageBackgroundColor(uiSurfaceColor(MaterialTheme.colorScheme.surface)),
-            topBar = {
-                ExpressiveTopBar(
-                    title = stringResource(R.string.root_auth_title),
-                    scrollBehavior = scrollBehavior,
-                    enableBlur = state.blurEnabled,
-                    actions = {
-                        IconButton(
-                            onClick = {
-                                refreshPresentation.beginRefresh()
-                                vm.refreshRootGrantApps(force = true)
-                            },
-                            enabled = !state.rootGrantLoading
-                        ) {
-                            if (state.rootGrantLoading) {
-                                LoadingIndicator(Modifier.size(22.dp))
-                            } else {
-                                Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.root_auth_refresh_list))
-                            }
-                        }
+            blurEnabled = state.blurEnabled,
+            scrollBehavior = scrollBehavior,
+            actions = {
+                IconButton(
+                    onClick = {
+                        refreshPresentation.beginRefresh()
+                        vm.refreshRootGrantApps(force = true)
+                    },
+                    enabled = !state.rootGrantLoading
+                ) {
+                    if (state.rootGrantLoading) {
+                        LoadingIndicator(Modifier.size(22.dp))
+                    } else {
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.root_auth_refresh_list))
                     }
-                )
+                }
             }
         ) { topBarHeight ->
             if (showInitialLoading) {
@@ -227,12 +220,13 @@ fun RootAuthorizationScreen(
                     onShowSystemAppsChange = { showSystemApps = it },
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                 )
-                return@BlurScreenScaffold
+                return@AbkPageScaffold
             }
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .abkPageEnter()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .padding(horizontal = AbkScreenHorizontalPadding),
                 verticalArrangement = Arrangement.spacedBy(AbkSpacing.md)
@@ -351,22 +345,18 @@ fun RootAuthorizationScreen(
                         backgroundUri = state.customBackgroundUri,
                         backgroundImageEnabled = state.backgroundImageEnabled
                     )
-                    BlurScreenScaffold(
+                    AbkPageScaffold(
+                        title = headerApp?.label?.ifBlank { packageName } ?: packageName,
                         blurConfig = state.blurConfig,
+                        blurEnabled = state.blurEnabled,
                         containerColor = Color.Transparent,
-                        topBar = {
-                            ExpressiveTopBar(
-                                title = headerApp?.label?.ifBlank { packageName } ?: packageName,
-                                navigationIcon = {
-                                    IconButton(
-                                        enabled = canLeaveDetail,
-                                        onClick = childPageBack::requestDismiss
-                                    ) {
-                                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.root_auth_back_to_list))
-                                    }
-                                },
-                                enableBlur = state.blurEnabled
-                            )
+                        navigationIcon = {
+                            IconButton(
+                                enabled = canLeaveDetail,
+                                onClick = childPageBack::requestDismiss
+                            ) {
+                                Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.root_auth_back_to_list))
+                            }
                         }
                     ) { topBarHeight ->
                         when {
