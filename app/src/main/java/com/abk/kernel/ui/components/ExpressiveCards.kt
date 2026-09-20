@@ -56,6 +56,8 @@ import com.abk.kernel.R
 import com.abk.kernel.ui.blur.LocalBlurredCardBackgroundEnabled
 import com.abk.kernel.ui.blur.blurredCardBackground
 import com.abk.kernel.ui.blur.blurredCardSurfaceColor
+import com.abk.kernel.ui.theme.AbkRadius
+import com.abk.kernel.ui.theme.AbkSpacing
 import com.abk.kernel.ui.theme.uiSurfaceColor
 
 @Composable
@@ -73,9 +75,10 @@ fun ExpressiveHeroCard(
         modifier = modifier
             .fillMaxWidth()
             .blurredCardBackground(
-                shape = MaterialTheme.shapes.medium,
+                shape = AbkRadius.large,
                 enabled = true,
             ),
+        shape = AbkRadius.large,
         colors = CardDefaults.cardColors(
             containerColor = blurredCardSurfaceColor(containerColor),
             contentColor = contentColor
@@ -144,22 +147,23 @@ fun ExpressiveSectionCard(
         modifier = modifier
             .fillMaxWidth()
             .blurredCardBackground(
-                shape = MaterialTheme.shapes.large,
+                shape = AbkRadius.large,
                 enabled = true,
             ),
+        shape = AbkRadius.large,
         colors = CardDefaults.cardColors(containerColor = blurredCardSurfaceColor(containerColor)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(14.dp)
+                .padding(AbkSpacing.lg)
                 .animateContentSize(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(AbkSpacing.md)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(AbkSpacing.md)
             ) {
                 if (icon != null) {
                     Icon(
@@ -169,7 +173,7 @@ fun ExpressiveSectionCard(
                         modifier = Modifier.size(20.dp)
                     )
                 }
-                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AbkSpacing.xs)) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.bodyLarge,
@@ -188,7 +192,7 @@ fun ExpressiveSectionCard(
                     trailingContent()
                 }
             }
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp), content = content)
+            Column(verticalArrangement = Arrangement.spacedBy(AbkSpacing.xs), content = content)
         }
     }
 }
@@ -220,26 +224,27 @@ fun ExpressiveCollapsibleSectionCard(
         modifier = modifier
             .fillMaxWidth()
             .blurredCardBackground(
-                shape = MaterialTheme.shapes.large,
+                shape = AbkRadius.large,
                 enabled = true,
             ),
+        shape = AbkRadius.large,
         colors = CardDefaults.cardColors(containerColor = blurredCardSurfaceColor(containerColor)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(14.dp)
+                .padding(AbkSpacing.lg)
                 .animateContentSize(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(AbkSpacing.md)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(AbkRadius.small)
                     .clickable(role = Role.Button) { expanded = !expanded },
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(AbkSpacing.md)
             ) {
                 if (icon != null) {
                     Icon(
@@ -329,9 +334,9 @@ fun ExpressiveListItem(
     ListItem(
         modifier = modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.large)
+            .clip(AbkRadius.medium)
             .blurredCardBackground(
-                shape = MaterialTheme.shapes.large,
+                shape = AbkRadius.medium,
                 enabled = true,
             )
             .then(clickableModifier),
