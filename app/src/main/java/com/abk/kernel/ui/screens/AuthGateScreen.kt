@@ -175,6 +175,7 @@ fun OobeScreen(vm: MainViewModel) {
                             behindBy = state.behindBy,
                             error = state.error,
                             onFork = { if (!skipInFlight) vm.forkRepo() },
+                            onFinish = { if (!skipInFlight) vm.finishOobe() },
                             onSkip = ::requestSkip,
                             skipInFlight = skipInFlight,
                             onClearError = { vm.clearError() }
@@ -228,7 +229,14 @@ private fun WizardChrome(
     page: @Composable ColumnScope.() -> Unit
 ) {
     CompositionLocalProvider(LocalUiSurfaceAlpha provides 1f) {
-        Scaffold(containerColor = Color.Transparent) { padding ->
+        // Only reserve the top (status bar) inset here. The bottom is left edge-to-edge
+        // on purpose so each page's sticky footer background can extend down under the
+        // gesture navigation pill — otherwise the strip behind the pill keeps the aurora
+        // tint while the footer above it is solid surface, producing a visible seam.
+        Scaffold(
+            containerColor = Color.Transparent,
+            contentWindowInsets = WindowInsets.statusBars
+        ) { padding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -311,12 +319,13 @@ private fun ColumnScope.WizardPage(
     LaunchedEffect(Unit) { entered = true }
 
     Box(modifier = Modifier.fillMaxSize()) {
+        val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
-                .padding(top = 16.dp, bottom = 120.dp),
+                .padding(top = 16.dp, bottom = 120.dp + navBarBottom),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             WizardHero(icon = icon, accent = accent, container = container, onContainer = onContainer)
@@ -354,7 +363,9 @@ private fun ColumnScope.WizardPage(
             }
         }
 
-        // Sticky footer with a gentle scrim so scrolled content fades under it.
+        // Sticky footer with a gentle scrim so scrolled content fades under it. The
+        // solid-surface background is drawn BEFORE navigationBarsPadding so it fills the
+        // strip behind the gesture pill, while the buttons themselves stay above the pill.
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -366,6 +377,7 @@ private fun ColumnScope.WizardPage(
                         1f to MaterialTheme.colorScheme.surface
                     )
                 )
+                .navigationBarsPadding()
                 .padding(horizontal = 24.dp)
                 .padding(top = 20.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -800,6 +812,7 @@ private fun ColumnScope.ForkPage(
     behindBy: Int,
     error: String?,
     onFork: () -> Unit,
+    onFinish: () -> Unit,
     onSkip: () -> Unit,
     skipInFlight: Boolean,
     onClearError: () -> Unit
@@ -873,15 +886,28 @@ private fun ColumnScope.ForkPage(
             }
         },
         footer = {
-            if (!isLoading && !hasFork) {
-                PrimaryWizardButton(
-                    text = stringResource(R.string.fork_action),
-                    icon = Icons.Default.ForkRight,
-                    onClick = onFork,
-                    enabled = !skipInFlight
-                )
+            when {
+                isLoading -> SkipWizardButton(onSkip = onSkip, enabled = !skipInFlight)
+                !hasFork -> {
+                    PrimaryWizardButton(
+                        text = stringResource(R.string.fork_action),
+                        icon = Icons.Default.ForkRight,
+                        onClick = onFork,
+                        enabled = !skipInFlight
+                    )
+                    SkipWizardButton(onSkip = onSkip, enabled = !skipInFlight)
+                }
+                else -> {
+                    // Fork ready: this is the last step. Completion is persisted only
+                    // here, on an explicit tap — never automatically.
+                    PrimaryWizardButton(
+                        text = stringResource(R.string.oobe_finish),
+                        icon = Icons.Default.CheckCircle,
+                        onClick = onFinish,
+                        enabled = !skipInFlight
+                    )
+                }
             }
-            SkipWizardButton(onSkip = onSkip, enabled = !skipInFlight)
         }
     ) {
         if (isLoading) {
