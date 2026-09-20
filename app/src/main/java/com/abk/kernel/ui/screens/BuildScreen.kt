@@ -82,7 +82,6 @@ import com.abk.kernel.data.model.WorkflowRun
 import com.abk.kernel.data.model.isKernelBuild
 import com.abk.kernel.data.model.isManagerBuild
 import com.abk.kernel.data.model.isManagerDevBuild
-import com.abk.kernel.ui.blur.BlurScreenScaffold
 import com.abk.kernel.ui.blur.blurredCardBackground
 import com.abk.kernel.ui.blur.blurredCardSurfaceColor
 import com.abk.kernel.ui.components.AbkScreenHorizontalPadding
@@ -101,12 +100,11 @@ import com.abk.kernel.ui.components.ExpressiveListItem
 import com.abk.kernel.ui.components.ExpressiveSectionCard
 import com.abk.kernel.ui.components.ExpressiveStatusChip
 import com.abk.kernel.ui.components.ExpressiveSwitchItem
-import com.abk.kernel.ui.components.ExpressiveTopBar
+import com.abk.kernel.ui.components.AbkPageScaffold
+import com.abk.kernel.ui.components.abkPageEnter
 import com.abk.kernel.ui.theme.AbkInsets
 import com.abk.kernel.ui.theme.AbkRadius
 import com.abk.kernel.ui.theme.AbkSpacing
-import com.abk.kernel.ui.theme.appPageBackgroundColor
-import com.abk.kernel.ui.theme.uiSurfaceColor
 import com.abk.kernel.viewmodel.BuildPlanImportPreview
 import com.abk.kernel.viewmodel.BuildPlanShareScope
 import com.abk.kernel.viewmodel.CustomKernelOptionSummary
@@ -1205,23 +1203,19 @@ fun BuildScreen(
 
     if (!state.isLoggedIn || state.forkRepo == null) {
         val needsLogin = !state.isLoggedIn
-        BlurScreenScaffold(
+        AbkPageScaffold(
+            title = stringResource(R.string.build_title),
             blurConfig = state.blurConfig,
-            containerColor = appPageBackgroundColor(uiSurfaceColor(MaterialTheme.colorScheme.surface)),
-            topBar = {
-                ExpressiveTopBar(
-                    title = stringResource(R.string.build_title),
-                    scrollBehavior = scrollBehavior,
-                    enableBlur = state.blurEnabled
-                )
-            }
+            blurEnabled = state.blurEnabled,
+            scrollBehavior = scrollBehavior
         ) { topBarHeight ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .abkPageEnter()
                     .padding(horizontal = AbkScreenHorizontalPadding)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(AbkSpacing.lg)
             ) {
                 Spacer(Modifier.height(topBarHeight + AbkInsets.contentTopGap))
                 ExpressiveHeroCard(
@@ -1287,24 +1281,20 @@ fun BuildScreen(
             .fillMaxWidth()
             .height(maxHeight + childPageTopInset + childPageBottomInset)
             .offset(y = -childPageTopInset)
-        BlurScreenScaffold(
+        AbkPageScaffold(
+            title = stringResource(R.string.build_title),
             blurConfig = state.blurConfig,
-            containerColor = appPageBackgroundColor(uiSurfaceColor(MaterialTheme.colorScheme.surface)),
-            topBar = {
-                ExpressiveTopBar(
-                    title = stringResource(R.string.build_title),
-                    scrollBehavior = scrollBehavior,
-                    enableBlur = state.blurEnabled
-                )
-            }
+            blurEnabled = state.blurEnabled,
+            scrollBehavior = scrollBehavior
         ) { topBarHeight ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .abkPageEnter()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = AbkScreenHorizontalPadding),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(AbkSpacing.lg)
             ) {
                 Spacer(Modifier.height(topBarHeight + AbkInsets.contentTopGap))
                 BuildPlanHero(
@@ -2166,24 +2156,22 @@ fun BuildScreen(
                     backgroundUri = state.customBackgroundUri,
                     backgroundImageEnabled = state.backgroundImageEnabled
                 )
-                BlurScreenScaffold(
+                AbkPageScaffold(
+                    title = when {
+                        showBuildQueuePage -> stringResource(R.string.build_queue_title)
+                        showKernelOptionsPage -> stringResource(R.string.build_kernel_options_title)
+                        showDefconfigEditorPage -> stringResource(R.string.build_source_defconfigs)
+                        else -> stringResource(R.string.build_plan_library)
+                    },
                     blurConfig = state.blurConfig,
+                    blurEnabled = state.blurEnabled,
                     containerColor = Color.Transparent,
-                    topBar = {
-                        ExpressiveTopBar(
-                            title = when {
-                                showBuildQueuePage -> stringResource(R.string.build_queue_title)
-                                showKernelOptionsPage -> stringResource(R.string.build_kernel_options_title)
-                                showDefconfigEditorPage -> stringResource(R.string.build_source_defconfigs)
-                                else -> stringResource(R.string.build_plan_library)
-                            },
-                            navigationIcon = {
-                                IconButton(onClick = childPageBack::requestDismiss) {
-                                    Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.build_back_to_config))
-                                }
-                            },
-                            enableBlur = state.blurEnabled,
-                            actions = {
+                    navigationIcon = {
+                        IconButton(onClick = childPageBack::requestDismiss) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.build_back_to_config))
+                        }
+                    },
+                    actions = {
                                 if (showKernelOptionsPage) {
                                     Box {
                                         IconButton(onClick = { showKernelOptionActionMenu = true }) {
@@ -2232,8 +2220,6 @@ fun BuildScreen(
                                     }
                                 }
                             }
-                        )
-                    }
                 ) { topBarHeight ->
                     if (showBuildQueuePage) {
                         BuildQueuePage(
