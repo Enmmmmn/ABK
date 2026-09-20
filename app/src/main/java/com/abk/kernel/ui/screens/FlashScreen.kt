@@ -52,7 +52,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
@@ -214,6 +213,8 @@ import com.abk.kernel.ui.components.ExpressiveHeroCard
 import com.abk.kernel.ui.components.ExpressiveSectionCard
 import com.abk.kernel.ui.components.ExpressiveStatusChip
 import com.abk.kernel.ui.components.ExpressiveTopBar
+import com.abk.kernel.ui.theme.AbkInsets
+import com.abk.kernel.ui.theme.AbkSpacing
 import com.abk.kernel.ui.theme.uiSurfaceColor
 import com.abk.kernel.utils.DownloadUtils
 import com.abk.kernel.utils.RootUtils
@@ -1265,8 +1266,8 @@ fun FlashScreen(
                     .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .padding(horizontal = AbkScreenHorizontalPadding),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                contentPadding = PaddingValues(top = topBarHeight + 16.dp, bottom = 96.dp + outerPadding.calculateBottomPadding())
+                verticalArrangement = Arrangement.spacedBy(AbkSpacing.md),
+                contentPadding = PaddingValues(top = topBarHeight + AbkInsets.contentTopGap, bottom = AbkInsets.contentBottomGap + outerPadding.calculateBottomPadding())
             ) {
                 item {
                     FlashHero(
@@ -1686,8 +1687,8 @@ fun FlashScreen(
                             .fillMaxSize()
                             .statusBarsPadding()
                             .padding(horizontal = AbkScreenHorizontalPadding),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        contentPadding = PaddingValues(bottom = 32.dp)
+                        verticalArrangement = Arrangement.spacedBy(AbkSpacing.md),
+                        contentPadding = PaddingValues(bottom = AbkSpacing.xxl)
                     ) {
                         if (group != null) {
                             val detailRun = recentRunById[group.runId]
@@ -1830,8 +1831,8 @@ fun FlashScreen(
                             .fillMaxSize()
                             .statusBarsPadding()
                             .padding(horizontal = AbkScreenHorizontalPadding),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        contentPadding = PaddingValues(bottom = 32.dp)
+                        verticalArrangement = Arrangement.spacedBy(AbkSpacing.md),
+                        contentPadding = PaddingValues(bottom = AbkSpacing.xxl)
                     ) {
                         if (release != null) {
                             item {
