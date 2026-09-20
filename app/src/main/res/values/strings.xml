@@ -106,6 +106,12 @@
     <string name="oobe_flash_detail">工作流构建产物、fork 仓库和 Actions 记录会在登录并完成 fork 检查后恢复可用。</string>
     <string name="oobe_continue_setup">继续配置 GitHub</string>
     <string name="oobe_skip_for_now">暂时跳过</string>
+    <string name="oobe_get_started">开始设置</string>
+    <string name="oobe_back">上一步</string>
+    <string name="oobe_next">下一步</string>
+    <string name="oobe_finish">进入 ABK</string>
+    <string name="oobe_setup_progress">第 %1$d / %2$d 步</string>
+    <string name="oobe_welcome_tagline">让我们花一点时间完成 AnyBase Kernel 的初始配置。</string>
 
     <!-- Build -->
     <string name="build_title">构建内核</string>
