@@ -29,20 +29,18 @@ import com.abk.kernel.BuildConfig
 import com.abk.kernel.R
 import com.abk.kernel.data.model.BuildStatus
 import com.abk.kernel.data.model.WorkflowRun
-import com.abk.kernel.ui.blur.BlurScreenScaffold
 import com.abk.kernel.ui.blur.blurredCardBackground
 import com.abk.kernel.ui.blur.blurredCardSurfaceColor
+import com.abk.kernel.ui.components.AbkPageScaffold
 import com.abk.kernel.ui.components.AbkScreenHorizontalPadding
 import com.abk.kernel.ui.components.ExpressiveHeroCard
 import com.abk.kernel.ui.components.ExpressiveSectionCard
 import com.abk.kernel.ui.components.ExpressiveStatusChip
-import com.abk.kernel.ui.components.ExpressiveTopBar
 import com.abk.kernel.ui.components.ShimmerLinearProgress
+import com.abk.kernel.ui.components.abkPageEnter
 import com.abk.kernel.ui.theme.AbkInsets
 import com.abk.kernel.ui.theme.AbkRadius
 import com.abk.kernel.ui.theme.AbkSpacing
-import com.abk.kernel.ui.theme.appPageBackgroundColor
-import com.abk.kernel.ui.theme.uiSurfaceColor
 import com.abk.kernel.utils.RootUtils
 import com.abk.kernel.viewmodel.MainViewModel
 
@@ -60,33 +58,29 @@ fun StatusScreen(
 
     LaunchedEffect(Unit) { vm.loadRecentRuns() }
 
-    BlurScreenScaffold(
+    AbkPageScaffold(
+        title = stringResource(R.string.app_name),
         blurConfig = state.blurConfig,
-        containerColor = appPageBackgroundColor(uiSurfaceColor(MaterialTheme.colorScheme.surface)),
-        topBar = {
-            ExpressiveTopBar(
-                title = stringResource(R.string.app_name),
-                compactTitle = true,
-                scrollBehavior = scrollBehavior,
-                enableBlur = state.blurEnabled,
-                actions = {
-                    IconButton(onClick = onToggleRuntimeNavigation) {
-                        Icon(
-                            imageVector = if (runtimeNavigationEnabled) Icons.Default.SwapHoriz else Icons.Default.Home,
-                            contentDescription = if (runtimeNavigationEnabled) {
-                                stringResource(R.string.nav_status)
-                            } else {
-                                stringResource(R.string.nav_home)
-                            }
-                        )
+        blurEnabled = state.blurEnabled,
+        compactTitle = true,
+        scrollBehavior = scrollBehavior,
+        actions = {
+            IconButton(onClick = onToggleRuntimeNavigation) {
+                Icon(
+                    imageVector = if (runtimeNavigationEnabled) Icons.Default.SwapHoriz else Icons.Default.Home,
+                    contentDescription = if (runtimeNavigationEnabled) {
+                        stringResource(R.string.nav_status)
+                    } else {
+                        stringResource(R.string.nav_home)
                     }
-                }
-            )
+                )
+            }
         }
     ) { topBarHeight ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .abkPageEnter()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = AbkScreenHorizontalPadding),
