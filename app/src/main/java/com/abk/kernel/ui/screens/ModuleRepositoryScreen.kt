@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -118,6 +117,9 @@ import com.abk.kernel.ui.components.rememberChildPageOverlayTransition
 import com.abk.kernel.ui.components.ExpressiveSectionCard
 import com.abk.kernel.ui.components.ExpressiveStatusChip
 import com.abk.kernel.ui.components.ExpressiveTopBar
+import com.abk.kernel.ui.theme.AbkInsets
+import com.abk.kernel.ui.theme.AbkRadius
+import com.abk.kernel.ui.theme.AbkSpacing
 import com.abk.kernel.ui.theme.appPageBackgroundColor
 import com.abk.kernel.ui.theme.uiSurfaceColor
 import com.abk.kernel.utils.LocaleHelper
@@ -953,8 +955,8 @@ private fun RuntimeModuleRepositoryListContent(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .padding(horizontal = AbkScreenHorizontalPadding),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        contentPadding = PaddingValues(top = topBarHeight + 16.dp, bottom = bottomPadding + 24.dp)
+        verticalArrangement = Arrangement.spacedBy(AbkSpacing.md),
+        contentPadding = PaddingValues(top = topBarHeight + AbkInsets.contentTopGap, bottom = bottomPadding + AbkSpacing.xl)
     ) {
         item(key = "search") {
             CompactModuleSearchField(
@@ -1057,7 +1059,7 @@ private fun RuntimeModuleRepositoryListItem(
 ) {
     val context = LocalContext.current
     val module = merged.module
-    val shape = RoundedCornerShape(8.dp)
+    val shape = AbkRadius.medium
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -1071,8 +1073,8 @@ private fun RuntimeModuleRepositoryListItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(7.dp)
+                .padding(AbkSpacing.lg),
+            verticalArrangement = Arrangement.spacedBy(AbkSpacing.sm)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -1176,7 +1178,7 @@ private fun CompactModuleSearchField(
         modifier = Modifier
             .fillMaxWidth()
             .height(44.dp),
-        shape = RoundedCornerShape(14.dp),
+        shape = AbkRadius.small,
         color = Color.Transparent,
         contentColor = colors.onSurface,
         border = BorderStroke(1.dp, colors.outline.copy(alpha = 0.72f))
@@ -1229,7 +1231,7 @@ private fun CompactModuleActionButton(
         onClick = onClick,
         enabled = enabled,
         modifier = Modifier.size(width = 42.dp, height = 36.dp),
-        shape = RoundedCornerShape(18.dp),
+        shape = AbkRadius.small,
         color = colors.secondaryContainer.copy(alpha = if (enabled) 0.82f else 0.44f),
         contentColor = if (enabled) colors.onSecondaryContainer else colors.onSurfaceVariant
     ) {
@@ -1260,7 +1262,7 @@ private fun ModuleTagChip(
         MaterialTheme.colorScheme.onPrimary
     }
     Surface(
-        shape = RoundedCornerShape(5.dp),
+        shape = AbkRadius.small,
         color = color.copy(alpha = if (secondary) 0.78f else 0.88f),
         contentColor = contentColor
     ) {
@@ -1295,9 +1297,9 @@ private fun RuntimeModuleRepositorySettingsPage(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = AbkScreenHorizontalPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(AbkSpacing.md)
     ) {
-        Spacer(Modifier.height(topBarHeight + 16.dp))
+        Spacer(Modifier.height(topBarHeight + AbkInsets.contentTopGap))
         ExpressiveSectionCard(
             title = runtimeRepoCentralLabel(LocalContext.current),
             subtitle = runtimeRepoCentralDescLabel(LocalContext.current),
@@ -1576,7 +1578,7 @@ private fun RuntimeRepositoryInstallDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 190.dp, max = 360.dp),
-                shape = RoundedCornerShape(12.dp),
+                shape = AbkRadius.medium,
                 color = terminalContainer,
                 contentColor = colorScheme.onSurface,
                 border = BorderStroke(1.dp, colorScheme.outlineVariant)
@@ -1752,8 +1754,8 @@ private fun BuildModuleRepositoryListContent(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .padding(horizontal = AbkScreenHorizontalPadding),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        contentPadding = PaddingValues(top = topBarHeight + 16.dp, bottom = bottomPadding + 24.dp)
+        verticalArrangement = Arrangement.spacedBy(AbkSpacing.md),
+        contentPadding = PaddingValues(top = topBarHeight + AbkInsets.contentTopGap, bottom = bottomPadding + AbkSpacing.xl)
     ) {
         item(key = "search") {
             CompactModuleSearchField(
@@ -1819,7 +1821,7 @@ private fun BuildModuleRepositoryListContent(
                 val allStagesAdded = supportedStages.all { stage ->
                     module.repoUrl.trim().lowercase() to stage in selectedModules
                 }
-                val shape = RoundedCornerShape(8.dp)
+                val shape = AbkRadius.medium
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1833,8 +1835,8 @@ private fun BuildModuleRepositoryListContent(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(7.dp)
+                            .padding(AbkSpacing.lg),
+                        verticalArrangement = Arrangement.spacedBy(AbkSpacing.sm)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -1959,9 +1961,9 @@ private fun BuildModuleRepositorySettingsPage(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = AbkScreenHorizontalPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(AbkSpacing.md)
     ) {
-        Spacer(Modifier.height(topBarHeight + 16.dp))
+        Spacer(Modifier.height(topBarHeight + AbkInsets.contentTopGap))
         ExpressiveSectionCard(
             title = buildRepoCentralLabel(context),
             subtitle = buildRepoCentralDescLabel(context),
