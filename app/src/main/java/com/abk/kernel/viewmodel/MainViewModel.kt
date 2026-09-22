@@ -6625,8 +6625,7 @@ internal fun KernelBuildConfig.toInputMap(): Map<String, String> {
             "source_private" to (config.sourceAccessMode == SOURCE_ACCESS_GITHUB_PRIVATE).toString(),
             "defconfigs" to config.sourceDefconfigs.joinToString("\n"),
             "device_label" to config.sourceDeviceLabel,
-            "kernel_version_override" to config.sourceKernelVersionOverride,
-            "os_patch_level" to config.osPatchLevel,
+            "version_overrides" to buildVersionOverridesJson(config.osPatchLevel, config.sourceKernelVersionOverride),
             "kernelsu_variant" to config.kernelsuVariant,
             "kernelsu_branch" to config.kernelsuBranch,
             "custom_ref" to if (config.kernelsuBranch == KSU_BRANCH_CUSTOM) config.customRef else "",
@@ -6725,6 +6724,17 @@ private fun List<CustomExternalModule>?.toWorkflowInput(): String = this.orEmpty
         }
     }
     .joinToString("|")
+
+// kernel-source.yml 的 workflow_dispatch inputs 有 25 个上限；把 os_patch_level 与
+// kernel_version_override 两个"版本元数据覆盖"合并成一个 JSON input 以腾出槽位。
+// 工作流侧用 fromJSON(inputs.version_overrides).<key> 取回。
+private fun buildVersionOverridesJson(osPatchLevel: String, kernelVersionOverride: String): String =
+    Gson().toJson(
+        mapOf(
+            "os_patch_level" to osPatchLevel,
+            "kernel_version_override" to kernelVersionOverride,
+        )
+    )
 
 private const val KERNEL_WORKFLOW_FILE = "kernel-custom.yml"
 private const val CUSTOM_SOURCE_WORKFLOW_FILE = "kernel-source.yml"
