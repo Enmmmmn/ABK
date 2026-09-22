@@ -31,6 +31,11 @@ on:
         required: false
         type: string
         default: ""
+      kernel_version_override:
+        description: "内核版本覆盖（留空=从源码 Makefile 自动检测；填 X.Y 或 X.Y.Z 覆盖编译 profile）"
+        required: false
+        type: string
+        default: ""
       os_patch_level:
         description: "AOSP 工具链/manifest 补丁月份（YYYY-MM）"
         required: true
@@ -159,6 +164,7 @@ jobs:
           SOURCE_PRIVATE: ${{ inputs.source_private }}
           SOURCE_DEFCONFIGS: ${{ inputs.defconfigs }}
           SOURCE_DEVICE_LABEL: ${{ inputs.device_label }}
+          KERNEL_VERSION_OVERRIDE: ${{ inputs.kernel_version_override }}
           OS_PATCH_LEVEL: ${{ inputs.os_patch_level }}
         run: |
           set -euo pipefail
@@ -224,6 +230,7 @@ jobs:
             --os-patch-level "$OS_PATCH_LEVEL" \
             --defconfigs "$SOURCE_DEFCONFIGS" \
             --device-label "$SOURCE_DEVICE_LABEL" \
+            --kernel-version-override "$KERNEL_VERSION_OVERRIDE" \
             --github-output "$GITHUB_OUTPUT"
 
           android_version="$(grep '^android_version=' "$GITHUB_OUTPUT" | tail -n1 | cut -d= -f2-)"
@@ -249,6 +256,7 @@ jobs:
       source_commit: ${{ needs.preflight.outputs.source_commit }}
       source_defconfigs: ${{ inputs.defconfigs }}
       source_device_label: ${{ inputs.device_label }}
+      kernel_version_override: ${{ inputs.kernel_version_override }}
       source_kernel_version: ${{ needs.preflight.outputs.kernel_version }}
       source_full_kernel_version: ${{ needs.preflight.outputs.full_kernel_version }}
       source_android_version: ${{ needs.preflight.outputs.android_version }}

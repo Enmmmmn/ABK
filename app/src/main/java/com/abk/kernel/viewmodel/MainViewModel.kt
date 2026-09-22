@@ -218,6 +218,8 @@ data class MainUiState(
     val artifactSigningOperationInFlight: Boolean = false,
     val customSourceSecretConfigured: Boolean = false,
     val customSourceSecretOperationInFlight: Boolean = false,
+    val customSourceDetecting: Boolean = false,
+    val customSourceDetectError: String? = null,
     val appUpdateStability: String = APP_UPDATE_STABILITY_STABLE,
     val appUpdateLine: String = APP_UPDATE_LINE_NORMAL,
     val appUpdateChecking: Boolean = false,
@@ -1951,6 +1953,47 @@ class MainViewModel @JvmOverloads constructor(
                 }
             } finally {
                 _uiState.update { it.copy(customSourceSecretOperationInFlight = false) }
+            }
+        }
+    }
+
+    /**
+     * 从 LOS 源码仓库根 Makefile 推断内核版本，成功后预填内核版本 override 与安全补丁月份。
+     * 失败不阻断（用户仍可手填），仅在 customSourceDetectError 记录原因。
+     */
+    fun detectCustomSourceVersion() {
+        val config = _uiState.value.buildConfig
+        if (config.buildTarget != BUILD_TARGET_CUSTOM_SOURCE) return
+        if (config.sourceUrl.isBlank() || config.sourceRef.isBlank()) return
+        if (_uiState.value.customSourceDetecting) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(customSourceDetecting = true, customSourceDetectError = null) }
+            try {
+                when (val result = github.fetchSourceMakefileVersion(config.sourceUrl, config.sourceRef)) {
+                    is Result.Success -> {
+                        val detected = result.data
+                        // 用检测到的完整版本推断一个默认安全补丁月份供用户参考/编辑。
+                        val recommended = KernelSupport.recommendedFromKernel(detected.toVersionString())
+                        val current = _uiState.value.buildConfig
+                        updateBuildConfig(
+                            current.copy(
+                                sourceKernelVersionOverride = detected.toVersionString(),
+                                osPatchLevel = recommended.osPatchLevel
+                            )
+                        )
+                    }
+                    is Result.Error -> {
+                        val message = if (result.message == "NON_GITHUB") {
+                            text(R.string.build_source_detect_non_github)
+                        } else {
+                            text(R.string.build_source_detect_failed)
+                        }
+                        _uiState.update { it.copy(customSourceDetectError = message) }
+                    }
+                    Result.Loading -> Unit
+                }
+            } finally {
+                _uiState.update { it.copy(customSourceDetecting = false) }
             }
         }
     }
@@ -6582,6 +6625,7 @@ internal fun KernelBuildConfig.toInputMap(): Map<String, String> {
             "source_private" to (config.sourceAccessMode == SOURCE_ACCESS_GITHUB_PRIVATE).toString(),
             "defconfigs" to config.sourceDefconfigs.joinToString("\n"),
             "device_label" to config.sourceDeviceLabel,
+            "kernel_version_override" to config.sourceKernelVersionOverride,
             "os_patch_level" to config.osPatchLevel,
             "kernelsu_variant" to config.kernelsuVariant,
             "kernelsu_branch" to config.kernelsuBranch,
